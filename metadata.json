@@ -1,0 +1,6 @@
+{
+  "name": "Suit Shop Rental Manager",
+  "description": "Simple offline shop rental management for suits & products: customer details, suit photo, pickup & return dates, rent amount, and security deposit return tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
