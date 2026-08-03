@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import html2canvas from 'html2canvas';
 import { RentalOrder } from '../../types';
 import { useBoutique } from '../../context/BoutiqueContext';
 import { formatCurrency, formatDate } from '../../utils/formatters';
-import { X, Printer, Shirt, Phone, MapPin, Calendar, CheckCircle2 } from 'lucide-react';
+import { X, Printer, Download, Shirt, Phone, MapPin, Calendar, CheckCircle2 } from 'lucide-react';
 
 interface ReceiptModalProps {
   order: RentalOrder | null;
@@ -11,6 +12,8 @@ interface ReceiptModalProps {
 
 export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) => {
   const { isBilingual } = useBoutique();
+  const receiptRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   if (!order) return null;
 
@@ -18,24 +21,57 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
     window.print();
   };
 
+  const handleDownload = async () => {
+    if (!receiptRef.current) return;
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(receiptRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+      });
+      const link = document.createElement('a');
+      link.download = `Rental_Slip_${order.orderCode}_${order.customerName.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error('Failed to generate image:', err);
+      // Fallback to window.print if html2canvas fails
+      window.print();
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div className="bg-white text-slate-900 rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative my-auto">
         {/* Top Control Bar (Hidden when printing) */}
-        <div className="bg-slate-900 text-white p-4 flex items-center justify-between print:hidden">
+        <div className="bg-slate-900 text-white p-4 flex items-center justify-between print:hidden gap-2 flex-wrap sm:flex-nowrap">
           <div className="flex items-center gap-2 font-bold text-sm">
             <Printer className="w-4 h-4 text-amber-400" />
-            <span>{isBilingual ? 'रेंट रसीद स्लिप' : 'Rental Receipt Slip'}</span>
+            <span>{isBilingual ? 'રેન્ટ રસીદ સ્લિપ' : 'Rental Receipt Slip'}</span>
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{isDownloading ? (isBilingual ? 'ડાઉનલોડિંગ...' : 'Downloading...') : (isBilingual ? 'ડાઉનલોડ સ્લિપ' : 'Download Slip')}</span>
+            </button>
+
             <button
               onClick={handlePrint}
               className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>{isBilingual ? 'प्रिंट करें' : 'Print Receipt'}</span>
+              <span>{isBilingual ? 'પ્રિન્ટ / PDF' : 'Print / PDF'}</span>
             </button>
+
             <button
               onClick={onClose}
               className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800"
@@ -46,7 +82,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
         </div>
 
         {/* Printable Receipt Body */}
-        <div className="p-6 sm:p-8 space-y-6 print:p-4">
+        <div ref={receiptRef} className="p-6 sm:p-8 space-y-6 print:p-4 bg-white">
           {/* Shop Header */}
           <div className="text-center border-b pb-4 border-slate-200">
             <div className="w-12 h-12 bg-slate-900 text-amber-400 rounded-2xl mx-auto flex items-center justify-center font-black mb-2 shadow">

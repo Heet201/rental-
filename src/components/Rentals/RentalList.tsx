@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBoutique } from '../../context/BoutiqueContext';
 import { RentalOrder } from '../../types';
+import { ReturnSuitModal } from './ReturnSuitModal';
 import {
   formatCurrency,
   formatDate,
@@ -42,6 +43,7 @@ export const RentalList: React.FC<RentalListProps> = ({
 }) => {
   const {
     orders,
+    activeTab,
     searchQuery,
     setSearchQuery,
     isBilingual,
@@ -51,6 +53,15 @@ export const RentalList: React.FC<RentalListProps> = ({
 
   const [activeFilter, setActiveFilter] = useState<FilterTab>('active');
   const [selectedPhoto, setSelectedPhoto] = useState<{ url: string; title: string } | null>(null);
+  const [returningOrder, setReturningOrder] = useState<RentalOrder | null>(null);
+
+  useEffect(() => {
+    if (activeTab === 'returned_history') {
+      setActiveFilter('returned');
+    } else if (activeTab === 'rentals') {
+      setActiveFilter('active');
+    }
+  }, [activeTab]);
 
   // Filter logic
   const filteredOrders = orders.filter((order) => {
@@ -92,15 +103,7 @@ export const RentalList: React.FC<RentalListProps> = ({
   };
 
   const handleReturnAndRefund = (order: RentalOrder) => {
-    if (
-      confirm(
-        isBilingual
-          ? `શું ગ્રાહક ${order.customerName} એ સૂટ પરત કરી દીધું છે?\nસિક્યુરિટી ડિપોઝિટ ₹${order.depositAmount} રિફંડ આપવી?`
-          : `Confirm suit return for ${order.customerName}?\nRefund security deposit ₹${order.depositAmount}?`
-      )
-    ) {
-      returnOrderAndRefundDeposit(order.id);
-    }
+    setReturningOrder(order);
   };
 
   return (
@@ -379,6 +382,34 @@ export const RentalList: React.FC<RentalListProps> = ({
                       </div>
                     </div>
 
+                    {/* Return Log Details if suit returned */}
+                    {(order.actualReturnDate || order.depositRefunded) && (
+                      <div className="bg-emerald-950/40 border border-emerald-800/60 p-2.5 rounded-xl space-y-1 text-xs">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-emerald-400 font-bold flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            {isBilingual ? 'પરત જમા તારીખ:' : 'Actual Return Date:'}
+                          </span>
+                          <span className="font-extrabold text-white font-mono">
+                            {formatDate(order.actualReturnDate || order.returnDate)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-slate-400 font-medium">
+                            {isBilingual ? 'ડિપોઝિટ રિફંડ મોડ:' : 'Refund Method:'}
+                          </span>
+                          <span className="font-bold text-amber-300 bg-slate-900 px-2 py-0.5 rounded border border-amber-500/30">
+                            💳 {order.depositRefundMode || 'Cash'}
+                          </span>
+                        </div>
+                        {order.returnNotes && (
+                          <div className="text-[10px] text-emerald-200/90 italic pt-1 border-t border-emerald-900/60">
+                            📝 "{order.returnNotes}"
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {order.notes && (
                       <p className="text-[11px] text-slate-400 italic bg-slate-950/40 px-2.5 py-1.5 rounded-lg border border-slate-800/50">
                         "{order.notes}"
@@ -460,6 +491,17 @@ export const RentalList: React.FC<RentalListProps> = ({
             );
           })}
         </div>
+      )}
+
+      {/* Return Suit & Refund Deposit Modal */}
+      {returningOrder && (
+        <ReturnSuitModal
+          order={returningOrder}
+          onClose={() => setReturningOrder(null)}
+          onPrintReceipt={(order) => {
+            onOpenReceipt(order);
+          }}
+        />
       )}
 
       {/* Photo Preview Zoom Modal */}

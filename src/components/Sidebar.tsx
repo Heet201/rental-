@@ -49,11 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const handleTabClick = (id: ActiveTab) => {
-    if (id === 'new_rental') {
-      onOpenNewRental();
-    } else {
-      setActiveTab(id);
-    }
+    setActiveTab(id);
     onCloseMobileMenu();
   };
 

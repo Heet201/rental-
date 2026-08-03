@@ -28,7 +28,7 @@ interface RentalContextType {
   addOrder: (orderData: Omit<RentalOrder, 'id' | 'orderCode' | 'createdAt' | 'status'>) => void;
   updateOrder: (id: string, data: Partial<RentalOrder>) => void;
   deleteOrder: (id: string) => void;
-  returnOrderAndRefundDeposit: (id: string, refundMode?: PaymentMode) => void;
+  returnOrderAndRefundDeposit: (id: string, refundMode?: PaymentMode, returnNotes?: string) => void;
 
   // Utilities
   resetToSampleData: () => void;
@@ -111,7 +111,7 @@ export const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     showToast('Order Deleted', `Order ${target?.orderCode || ''} removed.`, 'info');
   };
 
-  const returnOrderAndRefundDeposit = (id: string, refundMode?: PaymentMode) => {
+  const returnOrderAndRefundDeposit = (id: string, refundMode?: PaymentMode, returnNotes?: string) => {
     const target = orders.find((o) => o.id === id);
     if (!target) return;
 
@@ -126,14 +126,15 @@ export const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               depositRefunded: true,
               depositRefundMode: refundMode || 'Cash',
               status: 'Returned & Refunded',
+              returnNotes: returnNotes || o.returnNotes,
             }
           : o
       )
     );
 
     showToast(
-      'Suit Returned & Deposit Refunded / सूट मिला और डिपाज़िट वापस किया',
-      `Deposit ₹${target.depositAmount} refunded via ${refundMode || 'Cash'} to ${target.customerName}. Order ${target.orderCode} completed!`
+      'Suit Returned & Saved / સૂટ પરત જમા થયો',
+      `Deposit ₹${target.depositAmount} refunded via ${refundMode || 'Cash'} to ${target.customerName}. Order ${target.orderCode} stored in returned history!`
     );
   };
 

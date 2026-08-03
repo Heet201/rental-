@@ -16,6 +16,7 @@ export interface RentalOrder {
   pickupDate: string; // YYYY-MM-DD
   returnDate: string; // YYYY-MM-DD
   actualReturnDate?: string; // YYYY-MM-DD
+  returnNotes?: string; // Optional notes upon return (e.g. suit condition)
   
   rentAmount: number; // ₹
   depositAmount: number; // ₹ (Security deposit taken)
