@@ -31,7 +31,7 @@ export interface RentalOrder {
   createdAt: string;
 }
 
-export type ActiveTab = 'rentals' | 'new_rental' | 'returned_history' | 'summary';
+export type ActiveTab = 'rentals' | 'returned_history' | 'summary';
 
 export interface ToastMessage {
   id: string;
