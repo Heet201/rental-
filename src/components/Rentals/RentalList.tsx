@@ -3,6 +3,7 @@ import { useBoutique } from '../../context/BoutiqueContext';
 import { RentalOrder } from '../../types';
 import { ReturnSuitModal } from './ReturnSuitModal';
 import { OrderDetailModal } from './OrderDetailModal';
+import { SuitScheduleModal } from './SuitScheduleModal';
 import {
   formatCurrency,
   formatDate,
@@ -26,6 +27,7 @@ import {
   ArrowUpDown,
   X,
   Filter,
+  History,
 } from 'lucide-react';
 
 interface RentalListProps {
@@ -59,6 +61,8 @@ export const RentalList: React.FC<RentalListProps> = ({
   // Modals state
   const [selectedOrderDetails, setSelectedOrderDetails] = useState<RentalOrder | null>(null);
   const [returningOrder, setReturningOrder] = useState<RentalOrder | null>(null);
+  const [isScheduleTrackerOpen, setIsScheduleTrackerOpen] = useState(false);
+  const [selectedSuitForSchedule, setSelectedSuitForSchedule] = useState('');
 
   useEffect(() => {
     if (activeTab === 'returned_history') {
@@ -203,14 +207,29 @@ export const RentalList: React.FC<RentalListProps> = ({
             </button>
           </div>
 
-          {/* Create Order Button */}
-          <button
-            onClick={onOpenNewRental}
-            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-xl shadow flex items-center gap-1.5 transition shrink-0"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span>{isBilingual ? '+ નવો ઓર્ડર' : '+ New Order'}</span>
-          </button>
+          {/* Actions: Tracker & Create Order */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setSelectedSuitForSchedule('');
+                setIsScheduleTrackerOpen(true);
+              }}
+              className="bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-extrabold text-xs px-3 py-2 rounded-xl shadow flex items-center gap-1.5 transition"
+              title="Track rental dates & future schedule for any suit piece"
+            >
+              <History className="w-4 h-4 text-amber-400" />
+              <span className="hidden sm:inline">{isBilingual ? 'પીસ હિસ્ટ્રી શેડ્યૂલર' : 'Suit Schedule Tracker'}</span>
+              <span className="sm:hidden">{isBilingual ? 'પીસ ટ્રેકર' : 'Tracker'}</span>
+            </button>
+
+            <button
+              onClick={onOpenNewRental}
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-xl shadow flex items-center gap-1.5 transition shrink-0"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>{isBilingual ? '+ નવો ઓર્ડર' : '+ New Order'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Row 2: Search, Sort & View Mode Switcher */}
@@ -382,9 +401,22 @@ export const RentalList: React.FC<RentalListProps> = ({
                             className="w-10 h-10 object-cover rounded-lg border border-slate-800 shrink-0"
                           />
                           <div className="min-w-0">
-                            <span className="font-bold text-white text-xs block truncate group-hover:text-amber-300 transition">
-                              {order.productName}
-                            </span>
+                            <div className="flex items-center gap-1">
+                              <span className="font-bold text-white text-xs truncate group-hover:text-amber-300 transition">
+                                {order.productName}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedSuitForSchedule(order.productName);
+                                  setIsScheduleTrackerOpen(true);
+                                }}
+                                className="text-[10px] text-amber-400 hover:text-amber-300 bg-slate-950 px-1 py-0.5 rounded border border-slate-800 transition font-bold shrink-0"
+                                title="View rental dates & schedule for this piece"
+                              >
+                                🗓️ Schedule
+                              </button>
+                            </div>
                             <span className="text-[10px] text-slate-400 block font-mono">
                               Pickup: {formatDate(order.pickupDate)}
                             </span>
@@ -604,6 +636,17 @@ export const RentalList: React.FC<RentalListProps> = ({
           onPrintReceipt={(order) => onOpenReceipt(order)}
         />
       )}
+
+      {/* Suit Piece Schedule Tracker Modal */}
+      <SuitScheduleModal
+        isOpen={isScheduleTrackerOpen}
+        onClose={() => setIsScheduleTrackerOpen(false)}
+        initialSuitCodeOrName={selectedSuitForSchedule}
+        onViewOrderDetails={(order) => setSelectedOrderDetails(order)}
+        onBookSuitWithDates={(productName) => {
+          onOpenNewRental();
+        }}
+      />
     </div>
   );
 };
