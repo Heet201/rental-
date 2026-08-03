@@ -95,7 +95,7 @@ export const RentalList: React.FC<RentalListProps> = ({
     if (
       confirm(
         isBilingual
-          ? `क्या ग्राहक ${order.customerName} ने सूट वापस कर दिया है?\nसुरक्षा डिपाज़िट ₹${order.depositAmount} वापस करें?`
+          ? `શું ગ્રાહક ${order.customerName} એ સૂટ પરત કરી દીધું છે?\nસિક્યુરિટી ડિપોઝિટ ₹${order.depositAmount} રિફંડ આપવી?`
           : `Confirm suit return for ${order.customerName}?\nRefund security deposit ₹${order.depositAmount}?`
       )
     ) {
@@ -118,7 +118,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <span>{isBilingual ? 'सक्रिय रेंट' : 'Active Rentals'}</span>
+              <span>{isBilingual ? 'ચાલુ રેન્ટ' : 'Active Rentals'}</span>
               <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-950/20">
                 {counts.active}
               </span>
@@ -132,7 +132,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <span>{isBilingual ? 'आने वाली बुकिंग्स' : 'Upcoming Pickups'}</span>
+              <span>{isBilingual ? 'આવનારી બુકિંગ' : 'Upcoming Pickups'}</span>
               <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-950/20">
                 {counts.upcoming}
               </span>
@@ -146,7 +146,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <span>{isBilingual ? 'लेट वापसी (Overdue)' : 'Overdue Returns'}</span>
+              <span>{isBilingual ? 'મોડા પરત (Overdue)' : 'Overdue Returns'}</span>
               <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-950/20">
                 {counts.overdue}
               </span>
@@ -160,7 +160,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <span>{isBilingual ? 'वापस मिले (डिपाज़िट रिफंडेड)' : 'Returned & Refunded'}</span>
+              <span>{isBilingual ? 'પરત મળેલ (ડિપોઝિટ રિફંડેડ)' : 'Returned & Refunded'}</span>
               <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-950/20">
                 {counts.returned}
               </span>
@@ -174,7 +174,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
               }`}
             >
-              <span>{isBilingual ? 'सभी रिकॉर्ड' : 'All Orders'}</span>
+              <span>{isBilingual ? 'બધા રેકોર્ડ' : 'All Orders'}</span>
               <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-950/20">
                 {counts.all}
               </span>
@@ -186,7 +186,7 @@ export const RentalList: React.FC<RentalListProps> = ({
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3 py-2 rounded-xl shadow flex items-center gap-1 transition"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            <span>{isBilingual ? '+ नया रेंट आर्डर' : '+ New Order'}</span>
+            <span>{isBilingual ? '+ નવો રેન્ટ ઓર્ડર' : '+ New Order'}</span>
           </button>
         </div>
 
@@ -198,7 +198,7 @@ export const RentalList: React.FC<RentalListProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isBilingual ? 'नाम, मोबाइल या सूट खोजें...' : 'Search name, phone, suit...'}
+              placeholder={isBilingual ? 'નામ, મોબાઈલ કે સૂટ શોધો...' : 'Search name, phone, suit...'}
               className="w-full bg-slate-950 text-slate-100 text-xs pl-9 pr-8 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-amber-500"
             />
           </div>
@@ -213,11 +213,11 @@ export const RentalList: React.FC<RentalListProps> = ({
           </div>
           <div className="space-y-1">
             <h3 className="font-bold text-lg text-white">
-              {isBilingual ? 'कोई रेंट आर्डर नहीं मिला' : 'No Rental Orders Found'}
+              {isBilingual ? 'કોઈ રેન્ટ ઓર્ડર મળ્યો નથી' : 'No Rental Orders Found'}
             </h3>
             <p className="text-xs text-slate-400 max-w-sm mx-auto">
               {isBilingual
-                ? 'इस फ़िल्टर या खोज में कोई सूट रेंट रिकॉर्ड मौजूद नहीं है।'
+                ? 'આ ફિલ્ટર કે શોધમાં કોઈ સૂટ રેન્ટ રેકોર્ડ નથી.'
                 : 'No suit rental orders match the selected filter or search query.'}
             </p>
           </div>
@@ -226,7 +226,7 @@ export const RentalList: React.FC<RentalListProps> = ({
             className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            <span>{isBilingual ? 'नया रेंट आर्डर बनाएं' : 'Create New Rental Order'}</span>
+            <span>{isBilingual ? 'નવો રેન્ટ ઓર્ડર બનાવો' : 'Create New Rental Order'}</span>
           </button>
         </div>
       ) : (
@@ -260,7 +260,7 @@ export const RentalList: React.FC<RentalListProps> = ({
 
                     {/* Status Badge */}
                     <div className={`absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-lg border shadow-md ${badge.style}`}>
-                      {isBilingual ? badge.labelHi : badge.labelEn}
+                      {isBilingual ? badge.labelGu : badge.labelEn}
                     </div>
 
                     {/* Photo Click Zoom */}
@@ -269,7 +269,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       className="absolute bottom-3 right-3 bg-slate-900/80 hover:bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded-md border border-slate-700 flex items-center gap-1 backdrop-blur-sm"
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
-                      <span>{isBilingual ? 'फोटो देखें' : 'View Photo'}</span>
+                      <span>{isBilingual ? 'ફોટો જુઓ' : 'View Photo'}</span>
                     </button>
 
                     <div className="absolute bottom-3 left-3 right-16">
@@ -305,7 +305,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       <div className="p-2.5 bg-slate-950/40 rounded-xl border border-slate-800">
                         <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
                           <Calendar className="w-3 h-3 text-blue-400" />
-                          <span>{isBilingual ? 'कब लेने आएगा' : 'Pickup Date'}</span>
+                          <span>{isBilingual ? 'ક્યારે લઈ જશે' : 'Pickup Date'}</span>
                         </div>
                         <div className="font-bold text-white text-xs mt-0.5">
                           {formatDate(order.pickupDate)}
@@ -319,7 +319,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       }`}>
                         <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1">
                           <Clock className={`w-3 h-3 ${isLate ? 'text-rose-400' : 'text-amber-400'}`} />
-                          <span>{isBilingual ? 'कब देने आएगा' : 'Return Date'}</span>
+                          <span>{isBilingual ? 'ક્યારે પરત કરશે' : 'Return Date'}</span>
                         </div>
                         <div className="font-bold text-xs mt-0.5 flex items-center justify-between">
                           <span>{formatDate(order.returnDate)}</span>
@@ -332,31 +332,50 @@ export const RentalList: React.FC<RentalListProps> = ({
                       </div>
                     </div>
 
-                    {/* Money Breakdown */}
-                    <div className="grid grid-cols-2 gap-2 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
-                      <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                          {isBilingual ? 'रेंट किराया (Rent)' : 'Rent Amount'}
-                        </span>
-                        <span className="font-extrabold text-amber-400 text-sm">
-                          {formatCurrency(order.rentAmount)}
-                        </span>
+                    {/* Money Breakdown & Payment Mode */}
+                    <div className="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                            {isBilingual ? 'રેન્ટ ભાડું (Rent)' : 'Rent Amount'}
+                          </span>
+                          <span className="font-extrabold text-amber-400 text-sm">
+                            {formatCurrency(order.rentAmount)}
+                          </span>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                            {isBilingual ? 'જમા ડિપોઝિટ (Deposit)' : 'Deposit Held'}
+                          </span>
+                          <span className={`font-extrabold text-sm ${
+                            order.depositRefunded ? 'text-emerald-400 line-through opacity-70' : 'text-blue-400'
+                          }`}>
+                            {formatCurrency(order.depositAmount)}
+                          </span>
+                          {order.depositRefunded && (
+                            <span className="text-[9px] font-bold text-emerald-400 block">
+                              ✓ {isBilingual ? 'રિફંડેડ' : 'Refunded'} {order.depositRefundMode ? `(${order.depositRefundMode})` : ''}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                          {isBilingual ? 'जमा डिपाज़िट (Deposit)' : 'Deposit Held'}
-                        </span>
-                        <span className={`font-extrabold text-sm ${
-                          order.depositRefunded ? 'text-emerald-400 line-through opacity-70' : 'text-blue-400'
-                        }`}>
-                          {formatCurrency(order.depositAmount)}
-                        </span>
-                        {order.depositRefunded && (
-                          <span className="text-[9px] font-bold text-emerald-400 block">
-                            ✓ {isBilingual ? 'रिफंडेड' : 'Refunded'}
+                      {/* Payment Mode & Status Bar */}
+                      <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                        <span className="text-slate-400 font-bold">{isBilingual ? 'ચૂકવણી:' : 'Payment:'}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="bg-slate-900 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-500/30">
+                            💳 {order.paymentMode || 'Cash'}
                           </span>
-                        )}
+                          <span className={`font-bold px-2 py-0.5 rounded border ${
+                            order.paymentStatus === 'Paid' || order.isRentPaid
+                              ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800'
+                              : 'bg-amber-950/80 text-amber-300 border-amber-800'
+                          }`}>
+                            {order.paymentStatus || (order.isRentPaid ? 'Paid' : 'Pending')}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -379,7 +398,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       <DollarSign className="w-4 h-4 stroke-[3]" />
                       <span>
                         {isBilingual
-                          ? `सूट वापस मिला - डिपाज़िट ${formatCurrency(order.depositAmount)} रिफंड करें`
+                          ? `સૂટ પરત મળ્યું - ડિપોઝિટ ${formatCurrency(order.depositAmount)} રિફંડ કરો`
                           : `Return Suit & Refund Deposit (${formatCurrency(order.depositAmount)})`}
                       </span>
                     </button>
@@ -388,7 +407,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       <Check className="w-4 h-4 text-emerald-400" />
                       <span>
                         {isBilingual
-                          ? `सूट वापस जमा हो गया (डिपाज़िट ${formatCurrency(order.depositAmount)} रिफंड कर दिया)`
+                          ? `સૂટ પરત જમા થઈ ગયું (ડિપોઝિટ ${formatCurrency(order.depositAmount)} રિફંડ કરી દીધી)`
                           : `Suit Returned & Deposit ${formatCurrency(order.depositAmount)} Refunded`}
                       </span>
                     </div>
@@ -402,7 +421,7 @@ export const RentalList: React.FC<RentalListProps> = ({
                       title="Print Receipt"
                     >
                       <Printer className="w-3.5 h-3.5 text-amber-400" />
-                      <span>{isBilingual ? 'रसीद' : 'Slip'}</span>
+                      <span>{isBilingual ? 'રસીદ' : 'Slip'}</span>
                     </button>
 
                     <a

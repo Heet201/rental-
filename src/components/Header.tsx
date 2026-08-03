@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-amber-400/90 font-medium leading-tight">
-                {isBilingual ? 'सूट रेंट, डिलीवरी व डिपाज़िट बहीखाता' : 'Shop Rental, Pickup & Deposit Management'}
+                {isBilingual ? 'સૂટ રેન્ટ, ડિલિવરી અને ડિપોઝિટ ખાતાવહી' : 'Shop Rental, Pickup & Deposit Management'}
               </p>
             </div>
           </div>
@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
                 isBilingual
-                  ? 'ग्राहक का नाम, मोबाइल, सूट या आर्डर खोजें...'
+                  ? 'ગ્રાહકનું નામ, મોબાઈલ, સૂટ કે ઓર્ડર શોધો...'
                   : 'Search name, phone, suit, order code...'
               }
               className="w-full bg-slate-900 text-slate-100 text-xs pl-9 pr-8 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-amber-500 placeholder-slate-500 transition"
@@ -121,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
           {overdueCount > 0 && (
             <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-rose-300 bg-rose-950/80 px-3 py-1.5 rounded-lg border border-rose-800">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              {overdueCount} {isBilingual ? 'लेट वापसी' : 'Overdue'}
+              {overdueCount} {isBilingual ? 'મોડા પરત' : 'Overdue'}
             </span>
           )}
 
@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm px-3.5 py-2 rounded-xl shadow flex items-center gap-1.5 transition shrink-0"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            <span>{isBilingual ? 'नया रेंट आर्डर' : '+ New Rental'}</span>
+            <span>{isBilingual ? 'નવો રેન્ટ ઓર્ડર' : '+ New Rental'}</span>
           </button>
 
           {/* Bilingual Toggle */}
@@ -142,10 +142,10 @@ export const Header: React.FC<HeaderProps> = ({
                 ? 'bg-amber-950/80 text-amber-300 border-amber-800'
                 : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
             }`}
-            title="Switch Language (Hindi / English)"
+            title="Switch Language (Gujarati / English)"
           >
             <Globe className="w-3.5 h-3.5 text-amber-400" />
-            <span>{isBilingual ? 'हिंदी' : 'EN'}</span>
+            <span>{isBilingual ? 'ગુજરાતી' : 'EN'}</span>
           </button>
 
           {/* Backup */}
@@ -219,19 +219,19 @@ export const Header: React.FC<HeaderProps> = ({
 
               <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
                 <div>
-                  <h4 className="font-bold text-amber-300">Reset Demo Data</h4>
-                  <p className="text-slate-400 text-[11px]">Reload initial sample suit rental records.</p>
+                  <h4 className="font-bold text-rose-400">Clear All Database Records</h4>
+                  <p className="text-slate-400 text-[11px]">Clear all stored suit rental orders from memory.</p>
                 </div>
                 <button
                   onClick={() => {
-                    if (confirm('Reload demo database state?')) {
+                    if (confirm('Are you sure you want to delete all stored rental records?')) {
                       resetToSampleData();
                       setShowDataModal(false);
                     }
                   }}
-                  className="bg-amber-950 hover:bg-amber-900 text-amber-200 border border-amber-800 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shrink-0 transition"
+                  className="bg-rose-950 hover:bg-rose-900 text-rose-200 border border-rose-800 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shrink-0 transition"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" /> Reset
+                  <RotateCcw className="w-3.5 h-3.5" /> Clear All
                 </button>
               </div>
             </div>

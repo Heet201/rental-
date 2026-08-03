@@ -56,11 +56,11 @@ export const getDaysOverdue = (returnDate: string): number => {
   return diffDays > 0 ? diffDays : 0;
 };
 
-export const getRentalStatusBadge = (order: RentalOrder): { labelEn: string; labelHi: string; style: string } => {
+export const getRentalStatusBadge = (order: RentalOrder): { labelEn: string; labelGu: string; style: string } => {
   if (order.depositRefunded || order.actualReturnDate) {
     return {
       labelEn: 'Returned & Deposit Refunded',
-      labelHi: 'वापस मिला - डिपाज़िट रिफंडेड',
+      labelGu: 'પરત મળેલ - ડિપોઝિટ રિફંડ',
       style: 'bg-emerald-50 text-emerald-800 border-emerald-300',
     };
   }
@@ -68,7 +68,7 @@ export const getRentalStatusBadge = (order: RentalOrder): { labelEn: string; lab
   if (isOverdue(order.returnDate)) {
     return {
       labelEn: 'Overdue Return',
-      labelHi: 'वापसी में देरी (Overdue)',
+      labelGu: 'પરત કરવામાં મોડું (Overdue)',
       style: 'bg-rose-50 text-rose-800 border-rose-300 animate-pulse',
     };
   }
@@ -77,14 +77,14 @@ export const getRentalStatusBadge = (order: RentalOrder): { labelEn: string; lab
   if (order.pickupDate > today) {
     return {
       labelEn: 'Upcoming Pickup',
-      labelHi: 'लेने आना बाकी है',
+      labelGu: 'પિકઅપ બાકી (Upcoming)',
       style: 'bg-blue-50 text-blue-800 border-blue-300',
     };
   }
 
   return {
     labelEn: 'Out on Rent',
-    labelHi: 'रेंट पर गया हुआ है',
+    labelGu: 'ભાડે આપેલ (Out on Rent)',
     style: 'bg-amber-50 text-amber-800 border-amber-300',
   };
 };
@@ -95,11 +95,11 @@ export const generateWhatsAppReminder = (order: RentalOrder): string => {
 
   let message = '';
   if (order.depositRefunded) {
-    message = `नमस्ते ${order.customerName} जी,\n\nआपने ${order.productName} सुरक्षित वापस कर दिया है और आपका डिपाज़िट (₹${order.depositAmount}) रिफंड कर दिया गया है।\nहमारी दुकान पर आने के लिए धन्यवाद! 💐`;
+    message = `નમસ્તે ${order.customerName}જી,\n\nતમે ${order.productName} સુરક્ષિત પરત કરી દીધું છે અને તમારું સિક્યુરિટી ડિપોઝિટ (₹${order.depositAmount}) રિફંડ કરી દેવામાં આવ્યું છે.\nઅમારી બુટીક પર પધારવા બદલ આભાર! 💐`;
   } else if (isOverdue(order.returnDate)) {
-    message = `नमस्ते ${order.customerName} जी,\n\nआपकी रेंटेड ${order.productName} की वापसी की तारीख (${formatDate(order.returnDate)}) निकल चुकी है।\nकृपया जल्द से जल्द दुकान पर आकर उत्पाद जमा करवाएं और अपना सिक्योरिटी डिपाज़िट (₹${order.depositAmount}) वापस प्राप्त करें।\nधन्यवाद!`;
+    message = `નમસ્તે ${order.customerName}જી,\n\nતમારા ભાડે લીધેલ ${order.productName} ની પરત કરવાની તારીખ (${formatDate(order.returnDate)}) વિતી ગઈ છે.\nમહેરબાની કરીને વહેલી તકે બુટીક પર આવીને જમા કરાવો અને તમારું સિક્યુરિટી ડિપોઝિટ (₹${order.depositAmount}) પરત મેળવો.\nઆભાર!`;
   } else {
-    message = `नमस्ते ${order.customerName} जी,\n\nआपकी रेंट बुकिंग जानकारी:\n👕 प्रोडक्ट: ${order.productName}\n📅 लेने की तारीख (Pickup): ${formatDate(order.pickupDate)}\n📅 वापसी की तारीख (Return): ${formatDate(order.returnDate)}\n💰 रेंट किराया: ₹${order.rentAmount}\n🔒 जमा डिपाज़िट: ₹${order.depositAmount}\n\nकिसी भी जानकारी के लिए संपर्क करें। धन्यवाद!`;
+    message = `નમસ્તે ${order.customerName}જી,\n\nતમારી રેન્ટ બુકિંગ વિગત:\n👕 પ્રોડક્ટ: ${order.productName}\n📅 પિકઅપ તારીખ: ${formatDate(order.pickupDate)}\n📅 પરત તારીખ: ${formatDate(order.returnDate)}\n💰 ભાડું: ₹${order.rentAmount}\n🔒 ડિપોઝિટ: ₹${order.depositAmount}\n\nકોઈપણ માહિતી માટે સંપર્ક કરો. આભાર!`;
   }
 
   return `https://wa.me/${phoneWithCountry}?text=${encodeURIComponent(message)}`;

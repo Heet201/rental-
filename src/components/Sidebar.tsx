@@ -27,7 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'rentals' as ActiveTab,
       labelEn: 'Rentals & Orders',
-      labelHi: 'रेंट आर्डर सूची',
+      labelGu: 'રેન્ટ ઓર્ડર યાદી',
       icon: Shirt,
       badge: activeCount,
       badgeStyle: 'bg-amber-500 text-slate-950 font-bold',
@@ -35,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'returned_history' as ActiveTab,
       labelEn: 'Returned History',
-      labelHi: 'वापस मिले (रिफंडेड)',
+      labelGu: 'પરત મળેલ (રિફંડેડ)',
       icon: CheckCircle2,
       badge: returnedCount,
       badgeStyle: 'bg-emerald-500 text-slate-950 font-bold',
@@ -43,7 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'summary' as ActiveTab,
       labelEn: 'Rent & Deposit Ledger',
-      labelHi: 'रेंट व डिपाज़िट बहीखाता',
+      labelGu: 'ભાડું અને ડિપોઝિટ ખાતાવહી',
       icon: TrendingUp,
     },
   ];
@@ -93,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition"
           >
             <Plus className="w-5 h-5 stroke-[3]" />
-            <span>{isBilingual ? 'नया रेंट आर्डर बनाएं' : '+ New Rental Order'}</span>
+            <span>{isBilingual ? 'નવો રેન્ટ ઓર્ડર બનાવો' : '+ New Rental Order'}</span>
           </button>
 
           {/* Nav Links */}
@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : 'text-slate-400'}`} />
-                    <span>{isBilingual ? item.labelHi : item.labelEn}</span>
+                    <span>{isBilingual ? item.labelGu : item.labelEn}</span>
                   </div>
 
                   {item.badge !== undefined && (
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Footer info */}
         <div className="p-4 border-t border-slate-800/80 text-center space-y-1">
           <p className="text-[11px] font-bold text-slate-300">
-            {isBilingual ? 'ऑफलाइन रेंट सॉफ्टवेयर' : 'Offline Rental Software'}
+            {isBilingual ? 'ઓફલાઈન રેન્ટ સોફ્ટવેર' : 'Offline Rental Software'}
           </p>
           <p className="text-[10px] text-slate-500 font-mono">v2.0 • Data Saved in Browser</p>
         </div>

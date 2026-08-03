@@ -18,6 +18,14 @@ export const RentalSummary: React.FC = () => {
     (o) => !o.depositRefunded && !o.actualReturnDate && isOverdue(o.returnDate, o.actualReturnDate)
   ).length;
 
+  // Payment Methods Breakdown
+  const paymentBreakdown = {
+    Cash: orders.filter((o) => (o.paymentMode || 'Cash') === 'Cash' && o.isRentPaid).reduce((sum, o) => sum + o.rentAmount, 0),
+    UPI: orders.filter((o) => (o.paymentMode || '').includes('UPI') && o.isRentPaid).reduce((sum, o) => sum + o.rentAmount, 0),
+    Card: orders.filter((o) => o.paymentMode === 'Card' && o.isRentPaid).reduce((sum, o) => sum + o.rentAmount, 0),
+    NetBanking: orders.filter((o) => o.paymentMode === 'Net Banking' && o.isRentPaid).reduce((sum, o) => sum + o.rentAmount, 0),
+  };
+
   return (
     <div className="space-y-6">
       {/* Metric Cards Grid */}
@@ -26,7 +34,7 @@ export const RentalSummary: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-slate-400">
-              {isBilingual ? 'सक्रिय रेंट पर गए सूट' : 'Active Rented Suits'}
+              {isBilingual ? 'ચાલુ રેન્ટ પર ગયેલ સૂટ' : 'Active Rented Suits'}
             </span>
             <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
               <Shirt className="w-5 h-5" />
@@ -37,7 +45,7 @@ export const RentalSummary: React.FC = () => {
             <span className="text-xs text-slate-400 font-medium">Suits Out</span>
           </div>
           <p className="text-[11px] text-amber-400/80 mt-2 font-medium">
-            {isBilingual ? 'वर्तमान में रेंट पर चल रहे सूट' : 'Currently with customers'}
+            {isBilingual ? 'હાલમાં રેન્ટ પર ચાલી રહેલ સૂટ' : 'Currently with customers'}
           </p>
         </div>
 
@@ -45,7 +53,7 @@ export const RentalSummary: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-slate-400">
-              {isBilingual ? 'सुरक्षा डिपाज़िट जमा (Held Deposit)' : 'Security Deposit Held'}
+              {isBilingual ? 'સિક્યુરિટી ડિપોઝિટ જમા (Held Deposit)' : 'Security Deposit Held'}
             </span>
             <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
               <ShieldCheck className="w-5 h-5" />
@@ -55,7 +63,7 @@ export const RentalSummary: React.FC = () => {
             <span className="text-2xl font-black text-blue-400">{formatCurrency(totalDepositHeld)}</span>
           </div>
           <p className="text-[11px] text-blue-300/80 mt-2 font-medium">
-            {isBilingual ? 'सूट वापसी पर ग्राहक को लौटाना है' : 'To be refunded upon return'}
+            {isBilingual ? 'સૂટ પરત કરવા પર ગરાકને આપવાની છે' : 'To be refunded upon return'}
           </p>
         </div>
 
@@ -63,7 +71,7 @@ export const RentalSummary: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-slate-400">
-              {isBilingual ? 'कुल रेंट किराया कमाई' : 'Total Rent Earnings'}
+              {isBilingual ? 'કુલ રેન્ટ ભાડાની કમાણી' : 'Total Rent Earnings'}
             </span>
             <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
               <TrendingUp className="w-5 h-5" />
@@ -73,7 +81,7 @@ export const RentalSummary: React.FC = () => {
             <span className="text-2xl font-black text-emerald-400">{formatCurrency(totalRentEarned)}</span>
           </div>
           <p className="text-[11px] text-emerald-300/80 mt-2 font-medium">
-            {isBilingual ? 'सूट रेंट से प्राप्त कुल राशि' : 'Net rent collection'}
+            {isBilingual ? 'સૂટ રેન્ટમાંથી મળેલ કુલ રકમ' : 'Net rent collection'}
           </p>
         </div>
 
@@ -81,7 +89,7 @@ export const RentalSummary: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-slate-400">
-              {isBilingual ? 'लेट वापसी अलर्ट' : 'Overdue Returns'}
+              {isBilingual ? 'મોડા પરત એલર્ટ' : 'Overdue Returns'}
             </span>
             <div className={`p-2.5 rounded-xl border ${
               overdueCount > 0
@@ -98,8 +106,37 @@ export const RentalSummary: React.FC = () => {
             <span className="text-xs text-slate-400">Orders</span>
           </div>
           <p className="text-[11px] text-rose-300/80 mt-2 font-medium">
-            {isBilingual ? 'वापसी की तारीख निकल चुकी है' : 'Return date passed'}
+            {isBilingual ? 'પરત કરવાની તારીખ વીતી ગઈ છે' : 'Return date passed'}
           </p>
+        </div>
+      </div>
+
+      {/* Payment Modes Summary Cards */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3">
+        <h3 className="font-extrabold text-sm text-white">
+          {isBilingual ? 'પેમેન્ટ મોડ મુજબ કમાણી (Payment Method Breakdown)' : 'Rent Collection by Payment Method'}
+        </h3>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span className="text-[10px] font-bold uppercase text-emerald-400 block">💵 Cash Collection</span>
+            <span className="text-lg font-black text-white">{formatCurrency(paymentBreakdown.Cash)}</span>
+          </div>
+
+          <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span className="text-[10px] font-bold uppercase text-cyan-400 block">📲 UPI (GPay / PhonePe)</span>
+            <span className="text-lg font-black text-white">{formatCurrency(paymentBreakdown.UPI)}</span>
+          </div>
+
+          <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span className="text-[10px] font-bold uppercase text-indigo-400 block">💳 Card Payment</span>
+            <span className="text-lg font-black text-white">{formatCurrency(paymentBreakdown.Card)}</span>
+          </div>
+
+          <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span className="text-[10px] font-bold uppercase text-purple-400 block">🏛 Net Banking / Bank</span>
+            <span className="text-lg font-black text-white">{formatCurrency(paymentBreakdown.NetBanking)}</span>
+          </div>
         </div>
       </div>
 
@@ -108,11 +145,11 @@ export const RentalSummary: React.FC = () => {
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
           <div>
             <h3 className="font-extrabold text-base text-white">
-              {isBilingual ? 'डिपाज़िट रिफंड बहीखाता (Deposit Refunds History)' : 'Security Deposit Refunds Ledger'}
+              {isBilingual ? 'ડિપોઝિટ રિફંડ ચોપડો (Deposit Refunds History)' : 'Security Deposit Refunds Ledger'}
             </h3>
             <p className="text-xs text-slate-400">
               {isBilingual
-                ? `अब तक कुल ${formatCurrency(totalDepositRefunded)} डिपाज़िट ग्राहकों को रिफंड किया गया।`
+                ? `અત્યાર સુધી કુલ ${formatCurrency(totalDepositRefunded)} ડિપોઝિટ ગ્રાહકોને રિફંડ કરવામાં આવી.`
                 : `Total ${formatCurrency(totalDepositRefunded)} security deposit returned to customers.`}
             </p>
           </div>

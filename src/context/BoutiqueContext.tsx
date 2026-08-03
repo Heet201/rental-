@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ActiveTab, RentalOrder, ToastMessage } from '../types';
+import { ActiveTab, RentalOrder, ToastMessage, PaymentMode } from '../types';
 import {
   exportDatabaseJSON,
   getInitialSampleData,
@@ -28,7 +28,7 @@ interface RentalContextType {
   addOrder: (orderData: Omit<RentalOrder, 'id' | 'orderCode' | 'createdAt' | 'status'>) => void;
   updateOrder: (id: string, data: Partial<RentalOrder>) => void;
   deleteOrder: (id: string) => void;
-  returnOrderAndRefundDeposit: (id: string) => void;
+  returnOrderAndRefundDeposit: (id: string, refundMode?: PaymentMode) => void;
 
   // Utilities
   resetToSampleData: () => void;
@@ -111,7 +111,7 @@ export const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     showToast('Order Deleted', `Order ${target?.orderCode || ''} removed.`, 'info');
   };
 
-  const returnOrderAndRefundDeposit = (id: string) => {
+  const returnOrderAndRefundDeposit = (id: string, refundMode?: PaymentMode) => {
     const target = orders.find((o) => o.id === id);
     if (!target) return;
 
@@ -124,6 +124,7 @@ export const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               ...o,
               actualReturnDate: today,
               depositRefunded: true,
+              depositRefundMode: refundMode || 'Cash',
               status: 'Returned & Refunded',
             }
           : o
@@ -132,14 +133,13 @@ export const BoutiqueProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     showToast(
       'Suit Returned & Deposit Refunded / सूट मिला और डिपाज़िट वापस किया',
-      `Deposit ₹${target.depositAmount} refunded to ${target.customerName}. Order ${target.orderCode} completed!`
+      `Deposit ₹${target.depositAmount} refunded via ${refundMode || 'Cash'} to ${target.customerName}. Order ${target.orderCode} completed!`
     );
   };
 
   const resetToSampleData = () => {
-    const initial = getInitialSampleData();
-    setOrders(initial);
-    showToast('Database Reset', 'Sample rental orders restored successfully.');
+    setOrders([]);
+    showToast('Database Cleared / डेटा मिटा दिया गया', 'All rental records removed.');
   };
 
   const exportBackup = () => {

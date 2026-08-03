@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useBoutique } from '../../context/BoutiqueContext';
-import { RentalOrder } from '../../types';
+import { RentalOrder, PaymentMode, PaymentStatus } from '../../types';
 import { formatInputDate } from '../../utils/formatters';
 import {
   X,
@@ -14,6 +14,10 @@ import {
   Image as ImageIcon,
   Check,
   Camera,
+  CreditCard,
+  QrCode,
+  Banknote,
+  Building,
 } from 'lucide-react';
 
 interface NewRentalModalProps {
@@ -68,6 +72,11 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
     editOrder?.depositAmount || 2000
   );
 
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>(editOrder?.paymentMode || 'Cash');
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(
+    editOrder?.paymentStatus || (editOrder?.isRentPaid === false ? 'Pending / Pay on Pickup' : 'Paid')
+  );
+
   const [isRentPaid, setIsRentPaid] = useState<boolean>(editOrder?.isRentPaid ?? true);
   const [notes, setNotes] = useState<string>(editOrder?.notes || '');
 
@@ -88,20 +97,21 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
     e.preventDefault();
 
     if (!customerName.trim()) {
-      alert(isBilingual ? 'कृपया ग्राहक का नाम दर्ज करें' : 'Please enter customer name');
+      alert(isBilingual ? 'મહેરબાની કરીને ગ્રાહકનું નામ લખો' : 'Please enter customer name');
       return;
     }
     if (!customerPhone.trim()) {
-      alert(isBilingual ? 'कृपया मोबाइल नंबर दर्ज करें' : 'Please enter mobile number');
+      alert(isBilingual ? 'મહેરબાની કરીને મોબાઈલ નંબર લખો' : 'Please enter mobile number');
       return;
     }
     if (!productName.trim()) {
-      alert(isBilingual ? 'कृपया सूट या प्रोडक्ट का नाम लिखें' : 'Please enter suit / product name');
+      alert(isBilingual ? 'મહેરબાની કરીને સૂટ અથવા પ્રોડક્ટનું નામ લખો' : 'Please enter suit / product name');
       return;
     }
 
     const numericRent = Number(rentAmount) || 0;
     const numericDeposit = Number(depositAmount) || 0;
+    const rentPaidBool = paymentStatus === 'Paid';
 
     if (editOrder) {
       updateOrder(editOrder.id, {
@@ -114,7 +124,9 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
         returnDate,
         rentAmount: numericRent,
         depositAmount: numericDeposit,
-        isRentPaid,
+        isRentPaid: rentPaidBool,
+        paymentMode,
+        paymentStatus,
         notes: notes.trim(),
       });
     } else {
@@ -128,7 +140,9 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
         returnDate,
         rentAmount: numericRent,
         depositAmount: numericDeposit,
-        isRentPaid,
+        isRentPaid: rentPaidBool,
+        paymentMode,
+        paymentStatus,
         depositRefunded: false,
         notes: notes.trim(),
       });
@@ -150,15 +164,15 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
               <h2 className="font-extrabold text-lg text-white">
                 {editOrder
                   ? isBilingual
-                    ? 'रेंट आर्डर संपादित करें'
+                    ? 'રેન્ટ ઓર્ડર સુધારો'
                     : 'Edit Rental Order'
                   : isBilingual
-                  ? 'नया रेंट आर्डर जोड़ें'
+                  ? 'નવો રેન્ટ ઓર્ડર ઉમેરો'
                   : 'New Rental Order'}
               </h2>
               <p className="text-xs text-slate-400">
                 {isBilingual
-                  ? 'ग्राहक विवरण, सूट की फोटो, लेने/देने की तारीख एवं सुरक्षा डिपाज़िट'
+                  ? 'ગ્રાહકની વિગત, સૂટનો ફોટો, પિકઅપ/પરત તારીખ અને ડિપોઝિટ'
                   : 'Customer info, suit photo, pickup/return dates & deposit amount'}
               </p>
             </div>
@@ -178,13 +192,13 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
           <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
               <User className="w-4 h-4" />
-              <span>{isBilingual ? '1. ग्राहक की जानकारी (Customer Details)' : '1. Customer Information'}</span>
+              <span>{isBilingual ? '1. ગ્રાહકની વિગત (Customer Details)' : '1. Customer Information'}</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
-                  {isBilingual ? 'ग्राहक का नाम (Customer Name) *' : 'Customer Name *'}
+                  {isBilingual ? 'ગ્રાહકનું નામ (Customer Name) *' : 'Customer Name *'}
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -193,7 +207,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder={isBilingual ? 'उदा. राहुल शर्मा' : 'e.g. Rahul Sharma'}
+                    placeholder={isBilingual ? 'દા.ત. રાહુલ શર્મા' : 'e.g. Rahul Sharma'}
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
@@ -201,7 +215,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
-                  {isBilingual ? 'मोबाइल नंबर (Mobile Number) *' : 'Mobile Number *'}
+                  {isBilingual ? 'મોબાઈલ નંબર (Mobile Number) *' : 'Mobile Number *'}
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -219,7 +233,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">
-                {isBilingual ? 'पता (Address)' : 'Address'}
+                {isBilingual ? 'સરનામું (Address)' : 'Address'}
               </label>
               <div className="relative">
                 <MapPin className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -227,7 +241,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
                   rows={2}
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
-                  placeholder={isBilingual ? 'ग्राहक का पूरा पता...' : 'Full delivery or shop address...'}
+                  placeholder={isBilingual ? 'ગ્રાહકનું પૂરું સરનામું...' : 'Full delivery or shop address...'}
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
@@ -240,19 +254,19 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
           <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
               <Shirt className="w-4 h-4" />
-              <span>{isBilingual ? '2. सूट / प्रोडक्ट एवं फोटो (Suit Name & Photo)' : '2. Suit Details & Photo'}</span>
+              <span>{isBilingual ? '2. સૂટ / પ્રોડક્ટ અને ફોટો (Suit Name & Photo)' : '2. Suit Details & Photo'}</span>
             </h3>
 
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">
-                {isBilingual ? 'सूट / प्रोडक्ट का नाम (Suit/Product Name) *' : 'Suit / Product Name *'}
+                {isBilingual ? 'સૂટ / પ્રોડક્ટનું નામ (Suit/Product Name) *' : 'Suit / Product Name *'}
               </label>
               <input
                 type="text"
                 required
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                placeholder={isBilingual ? 'उदा. 3-Piece Navy Tuxedo Suit, Bridal Lehenga' : 'e.g. 3-Piece Tuxedo Suit'}
+                placeholder={isBilingual ? 'દા.ત. 3-Piece Navy Tuxedo Suit, Bridal Lehenga' : 'e.g. 3-Piece Tuxedo Suit'}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
               />
             </div>
@@ -260,7 +274,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
             {/* Photo Selection / Upload */}
             <div className="space-y-2">
               <label className="block text-xs font-bold text-slate-300">
-                {isBilingual ? 'सूट की फोटो चुनें या अपलोड करें (Suit Photo)' : 'Suit Photo (Select or Upload)'}
+                {isBilingual ? 'સૂટનો ફોટો પસંદ કરો અથવા અપલોડ કરો (Suit Photo)' : 'Suit Photo (Select or Upload)'}
               </label>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-900 p-3 rounded-2xl border border-slate-800">
@@ -277,7 +291,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
                   <div className="flex items-center gap-2">
                     <label className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg cursor-pointer flex items-center gap-1.5 shadow transition">
                       <Upload className="w-3.5 h-3.5" />
-                      <span>{isBilingual ? 'फोटो अपलोड / कैमरे से खींचें' : 'Upload / Snap Photo'}</span>
+                      <span>{isBilingual ? 'ફોટો અપલોડ કરો / કેમેરાથી લો' : 'Upload / Snap Photo'}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -289,7 +303,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
 
                   <p className="text-[11px] text-slate-400">
                     {isBilingual
-                      ? 'या नीचे दिए गए सैंपल सूट फ़ोटो में से चुनें:'
+                      ? 'અથવા નીચે આપેલ સેમ્પલ ફોટોમાંથી પસંદ કરો:'
                       : 'Or select from sample suit templates:'}
                   </p>
 
@@ -321,14 +335,14 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
           <div className="space-y-3">
             <h3 className="text-xs font-bold uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
               <Calendar className="w-4 h-4" />
-              <span>{isBilingual ? '3. तारीखें एवं सिक्योरिटी डिपाज़िट (Dates & Deposit)' : '3. Dates & Security Deposit'}</span>
+              <span>{isBilingual ? '3. તારીખો અને સિક્યુરિટી ડિપોઝિટ (Dates & Deposit)' : '3. Dates & Security Deposit'}</span>
             </h3>
 
             {/* Dates Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
-                  {isBilingual ? 'कब लेने आएगा (Pickup Date) *' : 'Pickup Date *'}
+                  {isBilingual ? 'ક્યારે લઈ જશે (Pickup Date) *' : 'Pickup Date *'}
                 </label>
                 <input
                   type="date"
@@ -341,7 +355,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
-                  {isBilingual ? 'कब देने आएगा (Return Date) *' : 'Return Date *'}
+                  {isBilingual ? 'ક્યારે પરત કરશે (Return Date) *' : 'Return Date *'}
                 </label>
                 <input
                   type="date"
@@ -353,74 +367,124 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
               </div>
             </div>
 
-            {/* Money Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
-              <div>
-                <label className="block text-xs font-bold text-amber-400 mb-1">
-                  {isBilingual ? 'रेंट किराया (Rent Amount ₹) *' : 'Rent Amount (₹) *'}
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₹</span>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={rentAmount}
-                    onChange={(e) => setRentAmount(e.target.value)}
-                    placeholder="1500"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-xs text-white font-extrabold focus:outline-none focus:border-amber-500"
-                  />
+            {/* Money & Payment Grid */}
+            <div className="bg-slate-900/60 p-4 rounded-2xl border border-slate-800 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-amber-400 mb-1">
+                    {isBilingual ? 'રેન્ટ ભાડું (Rent Amount ₹) *' : 'Rent Amount (₹) *'}
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₹</span>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={rentAmount}
+                      onChange={(e) => setRentAmount(e.target.value)}
+                      placeholder="1500"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-xs text-white font-extrabold focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-blue-400 mb-1">
+                    {isBilingual ? 'સિક્યુરિટી ડિપોઝિટ (Deposit ₹) *' : 'Security Deposit (₹) *'}
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₹</span>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      placeholder="2000"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-xs text-white font-extrabold focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    {isBilingual ? 'સૂટ પરત આપતી વખતે આ ડિપોઝિટ રિફંડ થશે.' : 'Refunded when suit is returned.'}
+                  </p>
                 </div>
               </div>
 
+              {/* Payment Mode Selector */}
               <div>
-                <label className="block text-xs font-bold text-blue-400 mb-1">
-                  {isBilingual ? 'सुरक्षा डिपाज़िट (Deposit ₹) *' : 'Security Deposit (₹) *'}
+                <label className="block text-xs font-bold text-slate-300 mb-2">
+                  {isBilingual ? 'પેમેન્ટની રીત (Payment Method)' : 'Payment Method'}
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">₹</span>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                    placeholder="2000"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-xs text-white font-extrabold focus:outline-none focus:border-blue-500"
-                  />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { mode: 'Cash' as PaymentMode, label: isBilingual ? 'રોકડ (Cash)' : 'Cash', icon: Banknote, color: 'text-emerald-400 border-emerald-500/30' },
+                    { mode: 'UPI (GPay/PhonePe)' as PaymentMode, label: isBilingual ? 'UPI (GPay / PhonePe)' : 'UPI (GPay / PhonePe)', icon: QrCode, color: 'text-cyan-400 border-cyan-500/30' },
+                    { mode: 'Card' as PaymentMode, label: isBilingual ? 'કાર્ડ (Card)' : 'Card', icon: CreditCard, color: 'text-indigo-400 border-indigo-500/30' },
+                    { mode: 'Net Banking' as PaymentMode, label: isBilingual ? 'નેટ બેન્કિંગ / બેંક' : 'Net Banking', icon: Building, color: 'text-purple-400 border-purple-500/30' },
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = paymentMode === item.mode;
+                    return (
+                      <button
+                        type="button"
+                        key={item.mode}
+                        onClick={() => setPaymentMode(item.mode)}
+                        className={`p-2.5 rounded-xl border text-left transition flex flex-col items-center justify-center gap-1 ${
+                          isSelected
+                            ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-lg'
+                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 ${isSelected ? 'text-amber-400' : 'text-slate-400'}`} />
+                        <span className="text-[11px] text-center">{item.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">
-                  {isBilingual ? 'सूट वापस करने पर यह डिपाज़िट रिफंड किया जाएगा।' : 'Refunded back when suit is returned.'}
-                </p>
               </div>
-            </div>
 
-            {/* Rent Paid Checkbox */}
-            <div className="flex items-center gap-2 pt-1">
-              <input
-                type="checkbox"
-                id="isRentPaidCheck"
-                checked={isRentPaid}
-                onChange={(e) => setIsRentPaid(e.target.checked)}
-                className="w-4 h-4 rounded text-amber-500 bg-slate-900 border-slate-700 focus:ring-0"
-              />
-              <label htmlFor="isRentPaidCheck" className="text-xs font-bold text-slate-200 cursor-pointer">
-                {isBilingual
-                  ? 'रेंट किराया प्राप्त हो गया है (Rent collected)'
-                  : 'Rent charges collected from customer'}
-              </label>
+              {/* Payment Status Selector */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-2">
+                  {isBilingual ? 'પેમેન્ટ સ્થિતિ (Payment Status)' : 'Payment Status'}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { status: 'Paid' as PaymentStatus, label: isBilingual ? 'પૂરું ચૂકવાઈ ગયું (Fully Paid)' : 'Fully Paid', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500' },
+                    { status: 'Partial / Deposit Only' as PaymentStatus, label: isBilingual ? 'ફક્ત ડિપોઝિટ મળેલ (Deposit Only)' : 'Deposit Only', bg: 'bg-blue-500/20 text-blue-300 border-blue-500' },
+                    { status: 'Pending / Pay on Pickup' as PaymentStatus, label: isBilingual ? 'બાકી છે (Pay on Pickup)' : 'Pay on Pickup', bg: 'bg-amber-500/20 text-amber-300 border-amber-500' },
+                  ].map((st) => (
+                    <button
+                      type="button"
+                      key={st.status}
+                      onClick={() => {
+                        setPaymentStatus(st.status);
+                        setIsRentPaid(st.status === 'Paid');
+                      }}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition flex items-center gap-1.5 ${
+                        paymentStatus === st.status
+                          ? st.bg
+                          : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {paymentStatus === st.status && <Check className="w-3.5 h-3.5" />}
+                      <span>{st.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Notes */}
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">
-                {isBilingual ? 'अतिरिक्त टिप्पणी (Notes / Accessories)' : 'Notes / Accessories'}
+                {isBilingual ? 'વધારાની નોંધ (Notes / Accessories)' : 'Notes / Accessories'}
               </label>
               <input
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder={isBilingual ? 'उदा. कवर बैग व हैंगर साथ दिया गया है' : 'e.g. Includes suit cover bag & hanger'}
+                placeholder={isBilingual ? 'દા.ત. કવર બેગ અને હેંગર સાથે આપેલ છે' : 'e.g. Includes suit cover bag & hanger'}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
               />
             </div>
@@ -433,7 +497,7 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
               onClick={onClose}
               className="px-4 py-2.5 rounded-xl border border-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-800 transition"
             >
-              {isBilingual ? 'रद्द करें' : 'Cancel'}
+              {isBilingual ? 'રદ કરો' : 'Cancel'}
             </button>
 
             <button
@@ -444,10 +508,10 @@ export const NewRentalModal: React.FC<NewRentalModalProps> = ({
               <span>
                 {editOrder
                   ? isBilingual
-                    ? 'अपडेट करें'
+                    ? 'અપડેટ કરો'
                     : 'Update Order'
                   : isBilingual
-                  ? 'रेंट आर्डर सेव करें'
+                  ? 'ઓર્ડર સેવ કરો'
                   : 'Save Rental Order'}
               </span>
             </button>

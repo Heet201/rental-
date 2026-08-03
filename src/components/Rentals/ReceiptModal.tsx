@@ -56,7 +56,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
               ROYAL SUIT & GARMENT RENTALS
             </h2>
             <p className="text-xs text-slate-600 font-medium">
-              {isBilingual ? 'सूट रेंट, डिलीवरी एवं डिपाज़िट स्लिप' : 'Suit Rental & Deposit Receipt'}
+              {isBilingual ? 'સૂટ રેન્ટ, ડિલિવરી અને ડિપોઝિટ સ્લિપ' : 'Suit Rental & Deposit Receipt'}
             </p>
             <div className="mt-2 inline-block bg-slate-100 border border-slate-300 px-3 py-1 rounded-full text-xs font-mono font-bold text-slate-800">
               Receipt No: <span className="text-amber-700">{order.orderCode}</span>
@@ -66,16 +66,32 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
           {/* Customer Details */}
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-xs">
             <div className="flex justify-between items-center">
-              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'ग्राहक का नाम' : 'Customer Name'}</span>
+              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'ગ્રાહકનું નામ' : 'Customer Name'}</span>
               <span className="font-extrabold text-sm text-slate-900">{order.customerName}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'मोबाइल नंबर' : 'Mobile'}</span>
+              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'મોબાઈલ નંબર' : 'Mobile'}</span>
               <span className="font-mono font-bold text-slate-800">{order.customerPhone}</span>
             </div>
             <div className="flex justify-between items-start">
-              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'पता' : 'Address'}</span>
+              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'સરનામું' : 'Address'}</span>
               <span className="font-medium text-slate-800 text-right max-w-[200px]">{order.customerAddress || 'N/A'}</span>
+            </div>
+            <div className="flex justify-between items-center pt-1 border-t border-slate-200">
+              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'ચૂકવણીની રીત (Payment Method)' : 'Payment Method'}</span>
+              <span className="font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
+                {order.paymentMode || 'Cash'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-slate-500 uppercase">{isBilingual ? 'પેમેન્ટ સ્થિતિ' : 'Payment Status'}</span>
+              <span className={`font-bold px-2 py-0.5 rounded border ${
+                order.paymentStatus === 'Paid' || order.isRentPaid
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                  : 'bg-amber-100 text-amber-800 border-amber-300'
+              }`}>
+                {order.paymentStatus || (order.isRentPaid ? 'Paid' : 'Pending')}
+              </span>
             </div>
           </div>
 
@@ -97,7 +113,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
             <div className="border border-slate-200 p-3 rounded-xl bg-slate-50/50">
               <div className="text-[10px] font-bold uppercase text-slate-500 flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-blue-600" />
-                <span>{isBilingual ? 'कब लेने आएगा (Pickup)' : 'Pickup Date'}</span>
+                <span>{isBilingual ? 'ક્યારે લઈ જશે (Pickup)' : 'Pickup Date'}</span>
               </div>
               <div className="font-bold text-slate-900 text-sm mt-0.5">{formatDate(order.pickupDate)}</div>
             </div>
@@ -105,7 +121,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
             <div className="border border-slate-200 p-3 rounded-xl bg-slate-50/50">
               <div className="text-[10px] font-bold uppercase text-slate-500 flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-amber-600" />
-                <span>{isBilingual ? 'कब देने आएगा (Return)' : 'Return Date'}</span>
+                <span>{isBilingual ? 'ક્યારે પરત કરશે (Return)' : 'Return Date'}</span>
               </div>
               <div className="font-bold text-slate-900 text-sm mt-0.5">{formatDate(order.returnDate)}</div>
             </div>
@@ -122,17 +138,17 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 <tr>
-                  <td className="p-3 font-medium">Rent Charges (रेंट किराया)</td>
+                  <td className="p-3 font-medium">Rent Charges (રેન્ટ ભાડું)</td>
                   <td className="p-3 text-right font-extrabold text-slate-900">{formatCurrency(order.rentAmount)}</td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-medium">Security Deposit Held (सुरक्षा जमा)</td>
+                  <td className="p-3 font-medium">Security Deposit Held (સિક્યુરિટી ડિપોઝિટ)</td>
                   <td className="p-3 text-right font-extrabold text-blue-700">{formatCurrency(order.depositAmount)}</td>
                 </tr>
               </tbody>
               <tfoot className="bg-slate-900 text-white font-extrabold">
                 <tr>
-                  <td className="p-3 text-amber-300">{isBilingual ? 'कुल जमा राशि (Total Collected)' : 'Total Collected'}</td>
+                  <td className="p-3 text-amber-300">{isBilingual ? 'કુલ જમા રકમ (Total Collected)' : 'Total Collected'}</td>
                   <td className="p-3 text-right text-amber-300 text-sm font-mono">
                     {formatCurrency(order.rentAmount + order.depositAmount)}
                   </td>
@@ -152,14 +168,14 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ order, onClose }) =>
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>
                   {isBilingual
-                    ? `सुरक्षा डिपाज़िट ${formatCurrency(order.depositAmount)} ग्राहक को सफलतापूर्वक रिफंड कर दिया गया है।`
+                    ? `સિક્યુરિટી ડિપોઝિટ ${formatCurrency(order.depositAmount)} ગ્રાહકને સફળતાપૂર્વક રિફંડ કરી દેવામાં આવી છે.`
                     : `Security deposit of ${formatCurrency(order.depositAmount)} has been refunded.`}
                 </span>
               </div>
             ) : (
               <span>
                 {isBilingual
-                  ? `📌 नोट: सुरक्षा डिपाज़िट ${formatCurrency(order.depositAmount)} सूट सही सलामत वापस मिलने पर पूरा लौटा दिया जाएगा।`
+                  ? `📌 નોંધ: સિક્યુરિટી ડિપોઝિટ ${formatCurrency(order.depositAmount)} સૂટ યોગ્ય સ્થિતિમાં પરત મળ્યે પૂરેપૂરી પાછી અપાશે.`
                   : `📌 Note: Security deposit ${formatCurrency(order.depositAmount)} is 100% refundable upon return.`}
               </span>
             )}
